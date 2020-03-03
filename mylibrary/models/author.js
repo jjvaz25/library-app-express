@@ -24,6 +24,13 @@ AuthorSchema
     return fullname;
   });
 
+//Virtual for author's lifespan
+AuthorSchema
+  .virtual('lifespan')
+  .get(() => {
+    return (this.date_of_death.getYear() - this.date_of_birth.getYear()).toString()
+  });
+
 //Virtual for author's URL
 AuthorSchema
   .virtual('url')
