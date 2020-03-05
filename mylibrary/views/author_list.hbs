@@ -1,0 +1,15 @@
+<h1>{{title}}</h1>
+<ul>
+  {{#if author_list}}
+    {{#each author_list}}
+      <li>
+        <div>
+          <a href={{this.url}}>{{this.name}}</a>
+          {{this.lifespan_formatted}}
+        </div>
+      </li>
+    {{/each}}
+  {{else}}
+    <p>No authors in the list</p>
+  {{/if}}
+</ul>

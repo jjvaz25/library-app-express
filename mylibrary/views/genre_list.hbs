@@ -1,0 +1,12 @@
+<h1>{{title}}</h1>
+<ul>
+  {{#if genre_list}}
+    {{#each genre_list}}
+      <li>
+        <a href={{this.url}}>{{this.name}}</a>
+      </li>
+    {{/each}}
+  {{else}}
+    <p>No genre in the list</p>
+  {{/if}}
+</ul>
