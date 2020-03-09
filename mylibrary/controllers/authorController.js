@@ -163,7 +163,7 @@ exports.author_update_post = [
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
       res.render('author_form', { 
-        title: 'Update Author', 
+        title: 'Update Author!', 
         author: req.body, 
         errors: errors.array()
       });
