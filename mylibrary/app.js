@@ -14,8 +14,8 @@ var app = express();
 
 //Set up mongoose connection
 var mongoose = require('mongoose'); 
-// var dev_db_url = 'mongodb+srv://jjvaz25:mongodbpwd@cluster0-m85lc.mongodb.net/local_library?retryWrites=true&w=majority'
-var dev_db_url = process.env.DB_INFO
+var dev_db_url = 'mongodb+srv://jjvaz25:mongodbpwd@cluster0-m85lc.mongodb.net/local_library?retryWrites=true&w=majority'
+// var dev_db_url = process.env.DB_INFO
 var mongoDB = process.env.DB_INFO || dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 var db = mongoose.connection;
