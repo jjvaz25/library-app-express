@@ -55,6 +55,9 @@ hbs.handlebars.registerHelper('check_undefined', (obj, val) => {
   return (obj === undefined ? '' : val)
 })
 
+hbs.handlebars.registerHelper('concatenate_strings', (str1, str2) => {
+  return `${str1}${str2}`;
+});
 
 hbs.handlebars.registerHelper('set_string', (str) => {
   return new hbs.handlebars.SafeString(str);

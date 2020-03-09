@@ -88,21 +88,84 @@ exports.bookinstance_create_post = [
 ];
 
 //display bookinstance delete form on GET
-exports.bookinstance_delete_get = (req, res) => {
-  res.send('NOT IMPLIMENTED: bookinstance delete GET');
+exports.bookinstance_delete_get = (req, res, next) => {
+  BookInstance.findById(req.params.id)
+  .populate('book')
+  .exec((err, bookinstance) => {
+    if(err) { return next(err); }
+    if (bookinstance==null) {
+      let err = new Error('Book copy not found');
+      err.status = 404;
+      return next(err);
+    }
+    res.render('bookinstance_delete', { title: 'Delete Copy ID:', bookinstance: bookinstance });
+  })
 };
 
 //handle bookinstance delete on POST
-exports.bookinstance_delete_post = (req, res) => {
-  res.send('NOT IMPLIMENTED: bookinstance delete POST');
+exports.bookinstance_delete_post = (req, res, next) => {
+  BookInstance.findById(req.body.bookinstanceid)
+    .populate('book')
+    .exec((err, bookinstance) => {
+      if(err) { return next(err); }
+      if(bookinstance == null){
+        let err = new Error('Book copy not found');
+        err.status = 404;
+        return next(err);
+      }
+      let book_url = bookinstance.book.url;
+      BookInstance.findByIdAndRemove(req.body.bookinstanceid, function deleteBookInstance(err) {
+        if(err) { return next(err); }
+        res.redirect(book_url);
+      });
+    });
 };
 
 //Display bookinstance update for on GET
-exports.bookinstance_update_get = (req, res) => {
-  res.send('NOT IMPLIMENTED: bookinstance update GET');
+exports.bookinstance_update_get = (req, res, next) => {
+  BookInstance.findById(req.params.id)
+    .populate('book')
+    .exec((err, bookinstance) => {
+      if(err) { return next(err); }
+      if(bookinstance == null){
+        let err = new Error('Book copy not found');
+        err.status = 404;
+        return next(err);
+      }
+      res.render('bookinstance_form', {title: 'Update Book Copy', bookinstance: bookinstance, book: bookinstance.book});
+    })
 };
 
 //handle bookinstance update for on POST
-exports.bookinstance_update_post = (req, res) => {
-  res.send('NOT IMPLIMENTED: bookinstance update POST');
-};
+exports.bookinstance_update_post = [
+  body('imprint', 'Imprint must be specified').trim().isLength({min: 1}),
+  body('due_back', 'Invalid date').optional({ checkFalsy: true }).isISO8601(),
+
+  sanitizeBody('imprint').escape(),
+  sanitizeBody('status').trim().escape(),
+  sanitizeBody('due_back').toDate(),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    let bookinstance = new BookInstance({
+      book: req.body.book,
+      imprint: req.body.imprint,
+      status: req.body.status,
+      due_back: req.body.due_back,
+      _id: req.params.id
+    });
+    if(!errors.isEmpty()) {
+      Book.findById(bookinstance.book)
+        .exec((err, book) => {
+          if(err) { return next(err); }
+          res.render('bookinstance_form', { title: 'Update Book Copy', errors: errors.array(), bookinstance: bookinstance, book: book });
+        })
+      return;
+    } else {
+      BookInstance.findByIdAndUpdate(bookinstance._id, bookinstance, {}, (err) => {
+        if(err) { return next(err); }
+        res.redirect(bookinstance.url);
+      })
+    }
+  }
+]
