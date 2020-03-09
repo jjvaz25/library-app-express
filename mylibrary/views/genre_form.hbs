@@ -1,0 +1,18 @@
+<h1>{{this.title}}</h1>
+
+<form action="" method="POST">
+  <div class="form-group">
+    <label for="name">Genre: </label>
+    <input type="text" id="name" class="form-control" placeholder='Fantasy, Poetry etc.'
+      name="name" value="{{check_undefined genre genre.name}}"
+    >
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </div>
+</form>
+{{#if errors}}
+  <ul>
+    {{#each errors}}
+      {{this.msg}}
+    {{/each}}
+  </ul>
+{{/if}}
